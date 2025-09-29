@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## DevOps Dashboard
+
+![CI](https://img.shields.io/github/workflow/status/<USER>/<REPO>/CI)
+![Lint/Test](https://img.shields.io/github/workflow/status/<USER>/<REPO>/Lint-Test)
+![Coverage](https://img.shields.io/badge/coverage-auto-green)
+
+## Features
+- Next.js Dashboard mit Systemmetriken (CPU, RAM, Netzwerk, Disk)
+- Loganzeige (neuste Einträge oben, scrollbar, Analytics für Page Loads/IPs)
+- Logging mit Winston (Konsole & Datei)
+- Monitoring mit Sentry (optional)
+- API-Routen: `/api/log`, `/api/sysinfo`, `/api/logs`
+- Husky Pre-Commit Hook für Linting/Formatting
+- GitHub Actions für CI, Lint/Test
+- Code Coverage mit Jest
+- dotenv für Umgebungsvariablen
 
 ## Getting Started
-
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Test & Coverage
+```bash
+npm run test
+npm run coverage
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Projektstruktur
+```
+public/
+src/
+	app/
+		api/
+		...
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## API-Routen
+- **/api/log**: Logging vom Client an Server
+- **/api/sysinfo**: Systemmetriken
+- **/api/logs**: Logdatei auslesen
 
-## Learn More
+## DevOps & Monitoring
+- **Linting/Formatting**: ESLint, Prettier, Husky
+- **CI/CD**: GitHub Actions Workflows
+- **Logging**: Winston
+- **Monitoring**: Sentry (optional)
+- **Testing/Coverage**: Jest, Testing Library
+- **dotenv**: Umgebungsvariablen
 
-To learn more about Next.js, take a look at the following resources:
+## Badges
+- CI Status
+- Lint/Test Status
+- Coverage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> Passe die Badge-Links (`<USER>/<REPO>`) für dein GitHub-Repo an.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Letzte Änderung:** 29.09.2025

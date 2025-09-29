@@ -1,103 +1,201 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+
+interface DiskInfo {
+  fs: string;
+  size: number;
+  used: number;
+  available: number;
+  usage: number;
+  mount: string;
+}
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [cpuData, setCpuData] = useState<number[]>([]);
+  const [memData, setMemData] = useState<number[]>([]);
+  const [netInData, setNetInData] = useState<number[]>([]);
+  const [netOutData, setNetOutData] = useState<number[]>([]);
+  const [diskData, setDiskData] = useState<DiskInfo[]>([]);
+  const [labels, setLabels] = useState<string[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    // Schreibe Log beim ersten Rendern
+    fetch('/api/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ level: 'info', message: 'Dashboard loaded: ' + new Date().toLocaleString() })
+    });
+
+    const interval = setInterval(async () => {
+      const res = await fetch("/api/sysinfo");
+      const data = await res.json();
+      setCpuData((prev) => [...prev.slice(-19), data.cpu]);
+      setMemData((prev) => [...prev.slice(-19), data.mem.usage]);
+      setNetInData((prev) => [...prev.slice(-19), data.net.rx / 1024]); // KB/s
+      setNetOutData((prev) => [...prev.slice(-19), data.net.tx / 1024]); // KB/s
+      setDiskData(data.disk);
+      setLabels((prev) => [
+        ...prev.slice(-19),
+        new Date().toLocaleTimeString()
+      ]);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+ 
+  const [logs, setLogs] = useState<string[]>([]);
+  useEffect(() => {
+    const fetchLogs = async () => {
+      const res = await fetch('/api/logs');
+      if (res.ok) {
+        const data = await res.json();
+        setLogs(data.logs || []);
+      }
+    };
+    fetchLogs();
+    const interval = setInterval(fetchLogs, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Analytics: Page Loads und IPs aus Logs extrahieren
+  const pageLoads = logs.filter(l => l.includes('Dashboard loaded'));
+  const ipCounts: Record<string, number> = {};
+  pageLoads.forEach(l => {
+    const match = l.match(/\[IP: ([^\]]+)\]/);
+    if (match) {
+      const ip = match[1];
+      ipCounts[ip] = (ipCounts[ip] || 0) + 1;
+    }
+  });
+
+  return (
+    <div style={{ maxWidth: 1000, margin: "2rem auto" }}>
+      <h2>System Monitoring Dashboard</h2>
+      <div style={{ display: "flex", gap: "2rem" }}>
+        <div style={{ flex: 1 }}>
+          <Line
+            data={{
+              labels,
+              datasets: [
+                {
+                  label: "CPU Usage (%)",
+                  data: cpuData,
+                  borderColor: "#36a2eb",
+                  backgroundColor: "rgba(54,162,235,0.2)",
+                },
+                {
+                  label: "RAM Usage (%)",
+                  data: memData,
+                  borderColor: "#ff6384",
+                  backgroundColor: "rgba(255,99,132,0.2)",
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: { position: "top" },
+                title: { display: true, text: "CPU & RAM Usage" },
+              },
+            }}
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        <div style={{ flex: 1 }}>
+          <Line
+            data={{
+              labels,
+              datasets: [
+                {
+                  label: "Net In (KB/s)",
+                  data: netInData,
+                  borderColor: "#4bc0c0",
+                  backgroundColor: "rgba(75,192,192,0.2)",
+                },
+                {
+                  label: "Net Out (KB/s)",
+                  data: netOutData,
+                  borderColor: "#9966ff",
+                  backgroundColor: "rgba(153,102,255,0.2)",
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: { position: "top" },
+                title: { display: true, text: "Network In/Out" },
+              },
+            }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </div>
+      </div>
+
+      <h3 style={{ marginTop: "2rem" }}>Disk Usage</h3>
+      <table style={{ width: "100%", marginTop: "1rem", borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th>Mount</th>
+            <th>Size (GB)</th>
+            <th>Used (GB)</th>
+            <th>Available (GB)</th>
+            <th>Usage (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {diskData.map((d, i) => (
+            <tr key={i}>
+              <td>{d.mount}</td>
+              <td>{(d.size / 1024 / 1024 / 1024).toFixed(2)}</td>
+              <td>{(d.used / 1024 / 1024 / 1024).toFixed(2)}</td>
+              <td>{(d.available / 1024 / 1024 / 1024).toFixed(2)}</td>
+              <td>{d.usage.toFixed(1)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h3 style={{ marginTop: "2rem" }}>Analytics: Page Loads</h3>
+      <div style={{ background: "#f5f5f5", color: "#222", padding: "1rem", borderRadius: "8px", maxWidth: "400px", marginBottom: "2rem" }}>
+        <strong>Page Loads insgesamt: {pageLoads.length}</strong>
+        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+          {Object.entries(ipCounts).map(([ip, count]) => (
+            <li key={ip} style={{ fontFamily: "monospace", fontSize: "0.95em", borderBottom: "1px solid #ccc" }}>
+              {ip}: {count}x
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <h3 style={{ marginTop: "2rem" }}>Logs</h3>
+  <div style={{ background: "#222", color: "#eee", padding: "1rem", borderRadius: "8px", height: "15vh", minHeight: "4em", overflowY: "auto" }}>
+        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+          {[...logs].reverse().map((log, idx) => (
+            <li key={idx} style={{ fontFamily: "monospace", fontSize: "0.95em", borderBottom: "1px solid #444" }}>{log}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
