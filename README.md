@@ -1,12 +1,19 @@
 ## DevOps Dashboard
 
-
-![Build (ci.yml)](<https://img.shields.io/github/actions/workflow/status/33SLueck/devops-einblick/ci.yml?branch=main&label=build%20(ci.yml)>)
-![Lint/Test](https://img.shields.io/github/actions/workflow/status/33SLueck/devops-einblick/test.yml?branch=main)
-[Coverage](https://img.shields.io/badge/coverage-auto-green)
-
-## Features
-
+<p align="center">
+	<a href="https://github.com/33SLueck/devops-einblick/actions/workflows/ci.yml">
+		<img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/33SLueck/devops-einblick/ci.yml?branch=main&label=build" />
+	</a>
+	<a href="https://github.com/33SLueck/devops-einblick/actions/workflows/test.yml">
+		<img alt="Lint/Test Status" src="https://img.shields.io/github/actions/workflow/status/33SLueck/devops-einblick/test.yml?branch=main&label=lint%20%26%20test" />
+	</a>
+	<img alt="Coverage" src="https://img.shields.io/badge/coverage-auto-green" />
+	<img alt="Stack" src="https://img.shields.io/badge/stack-Next.js%20%7C%20React%20%7C%20TypeScript-blue" />
+	<img alt="Packages" src="https://img.shields.io/badge/packages-Chart.js%2C%20Winston%2C%20systeminformation%2C%20Husky%2C%20Jest%2C%20Testing%20Library-lightgrey" />
+	<a href="https://github.com/33SLueck/devops-einblick/issues">
+		<img alt="Open Issues" src="https://img.shields.io/github/issues/33SLueck/devops-einblick?color=orange" />
+	</a>
+</p>
 - Next.js Dashboard mit Systemmetriken (CPU, RAM, Netzwerk, Disk)
 - Loganzeige (neuste Einträge oben, scrollbar, Analytics für Page Loads/IPs)
 - Logging mit Winston (Konsole & Datei)
