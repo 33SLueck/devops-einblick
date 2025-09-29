@@ -1,7 +1,12 @@
 ## DevOps Dashboard
 
+<<<<<<< Updated upstream
 ![CI](https://img.shields.io/github/workflow/status/<USER>/<REPO>/CI)
 ![Lint/Test](https://img.shields.io/github/workflow/status/<USER>/<REPO>/Lint-Test)
+=======
+![Build (ci.yml)](<https://img.shields.io/github/actions/workflow/status/33SLueck/devops-einblick/ci.yml?branch=main&label=build%20(ci.yml)>)
+![Lint/Test](https://img.shields.io/github/actions/workflow/status/33SLueck/devops-einblick/test.yml?branch=main)
+>>>>>>> Stashed changes
 ![Coverage](https://img.shields.io/badge/coverage-auto-green)
 
 ## Features
