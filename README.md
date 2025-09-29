@@ -11,6 +11,7 @@
 ![Packages](https://img.shields.io/badge/packages-Chart.js%2C%20Winston%2C%20systeminformation%2C%20Husky%2C%20Jest%2C%20Testing%20Library-lightgrey)
 
 [![Open Issues](https://img.shields.io/github/issues/33SLueck/devops-einblick?color=orange)](https://github.com/33SLueck/devops-einblick/issues)
+
 </p>
 - Next.js Dashboard mit Systemmetriken (CPU, RAM, Netzwerk, Disk)
 - Loganzeige (neuste Einträge oben, scrollbar, Analytics für Page Loads/IPs)
@@ -57,7 +58,7 @@ src/
 - **Linting/Formatting**: ESLint, Prettier, Husky
 - **CI/CD**: GitHub Actions Workflows
 - **Logging**: Winston
-- **Monitoring**: Sentry (optional)
+- **Monitoring**: Eigne Lösung für Demonstration
 - **Testing/Coverage**: Jest, Testing Library
 - **dotenv**: Umgebungsvariablen
 
