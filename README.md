@@ -5,6 +5,7 @@
 ![Coverage](https://img.shields.io/badge/coverage-auto-green)
 
 ## Features
+
 - Next.js Dashboard mit Systemmetriken (CPU, RAM, Netzwerk, Disk)
 - Loganzeige (neuste Einträge oben, scrollbar, Analytics für Page Loads/IPs)
 - Logging mit Winston (Konsole & Datei)
@@ -16,18 +17,21 @@
 - dotenv für Umgebungsvariablen
 
 ## Getting Started
+
 ```bash
 npm install
 npm run dev
 ```
 
 ## Test & Coverage
+
 ```bash
 npm run test
 npm run coverage
 ```
 
 ## Projektstruktur
+
 ```
 public/
 src/
@@ -37,11 +41,13 @@ src/
 ```
 
 ## API-Routen
+
 - **/api/log**: Logging vom Client an Server
 - **/api/sysinfo**: Systemmetriken
 - **/api/logs**: Logdatei auslesen
 
 ## DevOps & Monitoring
+
 - **Linting/Formatting**: ESLint, Prettier, Husky
 - **CI/CD**: GitHub Actions Workflows
 - **Logging**: Winston
@@ -50,6 +56,7 @@ src/
 - **dotenv**: Umgebungsvariablen
 
 ## Badges
+
 - CI Status
 - Lint/Test Status
 - Coverage

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 interface DiskInfo {
   fs: string;
@@ -10,7 +10,7 @@ interface DiskInfo {
   usage: number;
   mount: string;
 }
-import { Line } from "react-chartjs-2";
+import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,17 +20,9 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
+} from 'chart.js';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export default function Home() {
   const [cpuData, setCpuData] = useState<number[]>([]);
@@ -45,26 +37,25 @@ export default function Home() {
     fetch('/api/log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ level: 'info', message: 'Dashboard loaded: ' + new Date().toLocaleString() })
+      body: JSON.stringify({
+        level: 'info',
+        message: 'Dashboard loaded: ' + new Date().toLocaleString(),
+      }),
     });
 
     const interval = setInterval(async () => {
-      const res = await fetch("/api/sysinfo");
+      const res = await fetch('/api/sysinfo');
       const data = await res.json();
       setCpuData((prev) => [...prev.slice(-19), data.cpu]);
       setMemData((prev) => [...prev.slice(-19), data.mem.usage]);
       setNetInData((prev) => [...prev.slice(-19), data.net.rx / 1024]); // KB/s
       setNetOutData((prev) => [...prev.slice(-19), data.net.tx / 1024]); // KB/s
       setDiskData(data.disk);
-      setLabels((prev) => [
-        ...prev.slice(-19),
-        new Date().toLocaleTimeString()
-      ]);
+      setLabels((prev) => [...prev.slice(-19), new Date().toLocaleTimeString()]);
     }, 2000);
     return () => clearInterval(interval);
   }, []);
 
- 
   const [logs, setLogs] = useState<string[]>([]);
   useEffect(() => {
     const fetchLogs = async () => {
@@ -80,9 +71,9 @@ export default function Home() {
   }, []);
 
   // Analytics: Page Loads und IPs aus Logs extrahieren
-  const pageLoads = logs.filter(l => l.includes('Dashboard loaded'));
+  const pageLoads = logs.filter((l) => l.includes('Dashboard loaded'));
   const ipCounts: Record<string, number> = {};
-  pageLoads.forEach(l => {
+  pageLoads.forEach((l) => {
     const match = l.match(/\[IP: ([^\]]+)\]/);
     if (match) {
       const ip = match[1];
@@ -91,33 +82,33 @@ export default function Home() {
   });
 
   return (
-    <div style={{ maxWidth: 1000, margin: "2rem auto" }}>
+    <div style={{ maxWidth: 1000, margin: '2rem auto' }}>
       <h2>System Monitoring Dashboard</h2>
-      <div style={{ display: "flex", gap: "2rem" }}>
+      <div style={{ display: 'flex', gap: '2rem' }}>
         <div style={{ flex: 1 }}>
           <Line
             data={{
               labels,
               datasets: [
                 {
-                  label: "CPU Usage (%)",
+                  label: 'CPU Usage (%)',
                   data: cpuData,
-                  borderColor: "#36a2eb",
-                  backgroundColor: "rgba(54,162,235,0.2)",
+                  borderColor: '#36a2eb',
+                  backgroundColor: 'rgba(54,162,235,0.2)',
                 },
                 {
-                  label: "RAM Usage (%)",
+                  label: 'RAM Usage (%)',
                   data: memData,
-                  borderColor: "#ff6384",
-                  backgroundColor: "rgba(255,99,132,0.2)",
+                  borderColor: '#ff6384',
+                  backgroundColor: 'rgba(255,99,132,0.2)',
                 },
               ],
             }}
             options={{
               responsive: true,
               plugins: {
-                legend: { position: "top" },
-                title: { display: true, text: "CPU & RAM Usage" },
+                legend: { position: 'top' },
+                title: { display: true, text: 'CPU & RAM Usage' },
               },
             }}
           />
@@ -128,32 +119,32 @@ export default function Home() {
               labels,
               datasets: [
                 {
-                  label: "Net In (KB/s)",
+                  label: 'Net In (KB/s)',
                   data: netInData,
-                  borderColor: "#4bc0c0",
-                  backgroundColor: "rgba(75,192,192,0.2)",
+                  borderColor: '#4bc0c0',
+                  backgroundColor: 'rgba(75,192,192,0.2)',
                 },
                 {
-                  label: "Net Out (KB/s)",
+                  label: 'Net Out (KB/s)',
                   data: netOutData,
-                  borderColor: "#9966ff",
-                  backgroundColor: "rgba(153,102,255,0.2)",
+                  borderColor: '#9966ff',
+                  backgroundColor: 'rgba(153,102,255,0.2)',
                 },
               ],
             }}
             options={{
               responsive: true,
               plugins: {
-                legend: { position: "top" },
-                title: { display: true, text: "Network In/Out" },
+                legend: { position: 'top' },
+                title: { display: true, text: 'Network In/Out' },
               },
             }}
           />
         </div>
       </div>
 
-      <h3 style={{ marginTop: "2rem" }}>Disk Usage</h3>
-      <table style={{ width: "100%", marginTop: "1rem", borderCollapse: "collapse" }}>
+      <h3 style={{ marginTop: '2rem' }}>Disk Usage</h3>
+      <table style={{ width: '100%', marginTop: '1rem', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
             <th>Mount</th>
@@ -176,23 +167,58 @@ export default function Home() {
         </tbody>
       </table>
 
-      <h3 style={{ marginTop: "2rem" }}>Analytics: Page Loads</h3>
-      <div style={{ background: "#f5f5f5", color: "#222", padding: "1rem", borderRadius: "8px", maxWidth: "400px", marginBottom: "2rem" }}>
+      <h3 style={{ marginTop: '2rem' }}>Analytics: Page Loads</h3>
+      <div
+        style={{
+          background: '#f5f5f5',
+          color: '#222',
+          padding: '1rem',
+          borderRadius: '8px',
+          maxWidth: '400px',
+          marginBottom: '2rem',
+        }}
+      >
         <strong>Page Loads insgesamt: {pageLoads.length}</strong>
-        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {Object.entries(ipCounts).map(([ip, count]) => (
-            <li key={ip} style={{ fontFamily: "monospace", fontSize: "0.95em", borderBottom: "1px solid #ccc" }}>
+            <li
+              key={ip}
+              style={{
+                fontFamily: 'monospace',
+                fontSize: '0.95em',
+                borderBottom: '1px solid #ccc',
+              }}
+            >
               {ip}: {count}x
             </li>
           ))}
         </ul>
       </div>
 
-      <h3 style={{ marginTop: "2rem" }}>Logs</h3>
-  <div style={{ background: "#222", color: "#eee", padding: "1rem", borderRadius: "8px", height: "15vh", minHeight: "4em", overflowY: "auto" }}>
-        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+      <h3 style={{ marginTop: '2rem' }}>Logs</h3>
+      <div
+        style={{
+          background: '#222',
+          color: '#eee',
+          padding: '1rem',
+          borderRadius: '8px',
+          height: '15vh',
+          minHeight: '4em',
+          overflowY: 'auto',
+        }}
+      >
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {[...logs].reverse().map((log, idx) => (
-            <li key={idx} style={{ fontFamily: "monospace", fontSize: "0.95em", borderBottom: "1px solid #444" }}>{log}</li>
+            <li
+              key={idx}
+              style={{
+                fontFamily: 'monospace',
+                fontSize: '0.95em',
+                borderBottom: '1px solid #444',
+              }}
+            >
+              {log}
+            </li>
           ))}
         </ul>
       </div>

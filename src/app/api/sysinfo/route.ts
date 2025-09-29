@@ -21,7 +21,7 @@ export async function GET() {
       rx_total: net[0]?.rx_bytes || 0,
       tx_total: net[0]?.tx_bytes || 0,
     },
-    disk: disk.map(d => ({
+    disk: disk.map((d) => ({
       fs: d.fs,
       size: d.size,
       used: d.used,

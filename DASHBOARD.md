@@ -1,5 +1,3 @@
-
-
 # System Monitoring Dashboard
 
 Dieses Projekt enthält ein Next.js-basiertes Dashboard zur Überwachung von Systemmetriken, Logs und einfachen Analytics.
